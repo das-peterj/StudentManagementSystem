@@ -1,14 +1,13 @@
 package se.iths.entity;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
+@NamedQuery(name="Student.findStudentByLastName",
+        query="SELECT s from Student s where s.lastName LIKE :param")
 public class Student {
 
     @Id
