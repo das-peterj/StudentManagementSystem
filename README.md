@@ -29,7 +29,7 @@ http://localhost:8080/student-management-system/api/v1/students
 2. **Read:**
 - Get all students: `GET, No URL change`
 - Get one student: `GET, /{id}`
-- Get Student with lastname: `GET & Query, No URL change`
+- Get Student with lastname: `GET & Query, /lastname`
   - ``lastname     Jorgensen``
 
 3. **Update:**
