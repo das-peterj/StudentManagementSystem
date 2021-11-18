@@ -22,13 +22,14 @@ public class StudentRest {
     @Inject
     StudentService studentService;
 
-
     @POST
     public Response createStudent(Student student) {
         studentService.createStudent(student);
+        String errMsgRegistrationFailed = "{\"Error\": \"Registration Failed\"}";
+
         if(student == null) {
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Could not accept registration")
+                    .entity(errMsgRegistrationFailed)
                     .type(MediaType.APPLICATION_JSON_TYPE).build());
         }
         return Response.ok(student, MediaType.APPLICATION_JSON_TYPE).build();
@@ -37,35 +38,42 @@ public class StudentRest {
     @Path("{id}")
     @PATCH
     public Response updateStudentFirstName(@PathParam("id") Long id, @QueryParam("firstname") String firstName) {
-        Student updatedStudent = studentService.updateStudentFirstName(id, firstName);
-        if(updatedStudent == null) {
+        Student findStudent = studentService.findStudentById(id);
+        String errMsgStudentNotFound = "{\"Error\": \"No student found with id " + id + "\"}";
+
+        if (findStudent == null) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity("Student with ID " + id + " could not be found.")
+                    .entity(errMsgStudentNotFound)
                     .type(MediaType.APPLICATION_JSON).build());
         }
+        Student updatedStudent = studentService.updateStudentFirstName(id, firstName);
         return Response.ok(updatedStudent, MediaType.APPLICATION_JSON_TYPE).build();
     }
 
-//    @Path("{id}")
-//    @PATCH
-//    public Response updateStudentLastName(@PathParam("id") Long id, @QueryParam("lastname") String lastName) {
-//        Student updatedStudent = studentService.updateStudentLastName(id, lastName);
-//        if(updatedStudent == null) {
-//            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-//                    .entity("Student with ID " + id + " could not be found.")
-//                    .type(MediaType.APPLICATION_JSON).build());
-//
-//        }
-//        return Response.ok(updatedStudent).build();
-//    }
+    @Path("{id}")
+    @PUT
+    public Response updateStudent(@PathParam("id") Long id, Student student) {
+        Student changeStudent = studentService.findStudentById(id);
+        String errMsgStudentNotFound = "{\"Error\": \"No student found with id " + id + "\"}";
+
+        if (changeStudent == null) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .entity(errMsgStudentNotFound)
+                    .type(MediaType.APPLICATION_JSON).build());
+        }
+        changeStudent = studentService.updateStudent(id, student);
+        return Response.ok(changeStudent, MediaType.APPLICATION_JSON_TYPE).build();
+    }
 
 
     @GET
     public Response getAllStudents() {
         List<Student> foundStudents = studentService.getAllStudents();
+        String errMsgStudentsNotFound = "{\"Error\": \"No students found\"}";
+
         if (foundStudents == null || foundStudents.isEmpty()) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity("No Students in the database.")
+                    .entity(errMsgStudentsNotFound)
                     .type(MediaType.APPLICATION_JSON_TYPE).build());
         }
         return Response.ok(foundStudents).build();
@@ -78,9 +86,11 @@ public class StudentRest {
             return Response.serverError().entity("ID cannot be blank").build();
         }
         Student foundStudent = studentService.findStudentById(id);
+        String errMsgStudentNotFound = "{\"Error\": \"No student found with id " + id + "\"}";
+
         if(foundStudent == null) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity("Student with ID " + id + " could not be found.")
+                    .entity(errMsgStudentNotFound)
                     .type(MediaType.APPLICATION_JSON).build());
 
         }
@@ -91,11 +101,12 @@ public class StudentRest {
     @GET
     public Response getStudentByLastName(@QueryParam("lastname") String lastName) {
         List<Student> foundStudent = studentService.findStudentByLastName(lastName);
+        String errMsgLastNameNotFound = "{\"Error\": \"No student found with lastname " + lastName + "\"}";
+
         if(foundStudent == null || foundStudent.isEmpty()) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity("Student with last name " + lastName + " could not be found.")
+                    .entity(errMsgLastNameNotFound)
                     .type(MediaType.APPLICATION_JSON).build());
-
         }
         return Response.ok(foundStudent).build();
     }
@@ -104,13 +115,14 @@ public class StudentRest {
     @DELETE
     public Response deleteStudent(@PathParam("id") Long id){
                 Student foundStudent = studentService.doesStudentExist(id);
+                String errMsgStudentNotFound = "{\"Error\": \"No student found with id " + id + "\"}";
+
                 if(foundStudent == null) {
-                    throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                            .entity("Student with ID " + id + " could not be found.")
+                    throw new WebApplicationException(Response.status(Response.Status.GONE)
+                            .entity(errMsgStudentNotFound)
                             .type(MediaType.APPLICATION_JSON_TYPE).build());
                 }
                 studentService.deleteStudentById(id);
-//                return Response.ok().build();
                 return Response.status(Response.Status.ACCEPTED).type(MediaType.APPLICATION_JSON_TYPE).build();
             }
 

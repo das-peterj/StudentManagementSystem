@@ -23,9 +23,13 @@ public class StudentService {
         return student;
     }
 
-    public Student updateStudent(Student student) {
-        entityManager.merge(student);
-        return student;
+    public Student updateStudent(Long id, Student student) {
+        Student foundStudent = entityManager.find(Student.class, id);
+        foundStudent.setFirstName(student.getFirstName());
+        foundStudent.setLastName(student.getLastName());
+        foundStudent.setEmail(student.getEmail());
+        foundStudent.setPhoneNumber(student.getPhoneNumber());
+        return entityManager.merge(foundStudent);
     }
 
     public Student findStudentById(Long id) {
@@ -51,12 +55,6 @@ public class StudentService {
     public Student updateStudentFirstName(long id, String name) {
         Student foundStudent = entityManager.find(Student.class, id);
         foundStudent.setFirstName(name);
-        return entityManager.merge(foundStudent);
-    }
-
-    public Student updateStudentLastName(long id, String name) {
-        Student foundStudent = entityManager.find(Student.class, id);
-        foundStudent.setLastName(name);
         return entityManager.merge(foundStudent);
     }
 
