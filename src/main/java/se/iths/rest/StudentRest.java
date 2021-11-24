@@ -1,6 +1,9 @@
 package se.iths.rest;
 
 import se.iths.entity.Student;
+import se.iths.exception.BadRequestException;
+import se.iths.exception.BeenRemovedException;
+import se.iths.exception.NotFoundException;
 import se.iths.service.StudentService;
 
 import javax.inject.Inject;
@@ -28,9 +31,7 @@ public class StudentRest {
         String errMsgRegistrationFailed = "{\"Error\": \"Registration Failed\"}";
 
         if(student == null) {
-            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-                    .entity(errMsgRegistrationFailed)
-                    .type(MediaType.APPLICATION_JSON_TYPE).build());
+            throw new BadRequestException(errMsgRegistrationFailed);
         }
         return Response.ok(student, MediaType.APPLICATION_JSON_TYPE).build();
     }
@@ -42,9 +43,7 @@ public class StudentRest {
         String errMsgStudentNotFound = "{\"Error\": \"No student found with id " + id + "\"}";
 
         if (findStudent == null) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity(errMsgStudentNotFound)
-                    .type(MediaType.APPLICATION_JSON).build());
+            throw new NotFoundException(errMsgStudentNotFound);
         }
         Student updatedStudent = studentService.updateStudentFirstName(id, firstName);
         return Response.ok(updatedStudent, MediaType.APPLICATION_JSON_TYPE).build();
@@ -57,9 +56,7 @@ public class StudentRest {
         String errMsgStudentNotFound = "{\"Error\": \"No student found with id " + id + "\"}";
 
         if (changeStudent == null) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity(errMsgStudentNotFound)
-                    .type(MediaType.APPLICATION_JSON).build());
+            throw new NotFoundException(errMsgStudentNotFound);
         }
         changeStudent = studentService.updateStudent(id, student);
         return Response.ok(changeStudent, MediaType.APPLICATION_JSON_TYPE).build();
@@ -72,9 +69,7 @@ public class StudentRest {
         String errMsgStudentsNotFound = "{\"Error\": \"No students found\"}";
 
         if (foundStudents == null || foundStudents.isEmpty()) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity(errMsgStudentsNotFound)
-                    .type(MediaType.APPLICATION_JSON_TYPE).build());
+            throw new NotFoundException(errMsgStudentsNotFound);
         }
         return Response.ok(foundStudents).build();
     }
@@ -89,10 +84,7 @@ public class StudentRest {
         String errMsgStudentNotFound = "{\"Error\": \"No student found with id " + id + "\"}";
 
         if(foundStudent == null) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity(errMsgStudentNotFound)
-                    .type(MediaType.APPLICATION_JSON).build());
-
+            throw new NotFoundException(errMsgStudentNotFound);
         }
         return Response.ok(foundStudent, MediaType.APPLICATION_JSON_TYPE).build();
     }
@@ -104,9 +96,7 @@ public class StudentRest {
         String errMsgLastNameNotFound = "{\"Error\": \"No student found with lastname " + lastName + "\"}";
 
         if(foundStudent == null || foundStudent.isEmpty()) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-                    .entity(errMsgLastNameNotFound)
-                    .type(MediaType.APPLICATION_JSON).build());
+            throw new NotFoundException(errMsgLastNameNotFound);
         }
         return Response.ok(foundStudent).build();
     }
@@ -118,13 +108,10 @@ public class StudentRest {
                 String errMsgStudentNotFound = "{\"Error\": \"No student found with id " + id + "\"}";
 
                 if(foundStudent == null) {
-                    throw new WebApplicationException(Response.status(Response.Status.GONE)
-                            .entity(errMsgStudentNotFound)
-                            .type(MediaType.APPLICATION_JSON_TYPE).build());
+                    throw new BeenRemovedException(errMsgStudentNotFound);
                 }
                 studentService.deleteStudentById(id);
                 return Response.status(Response.Status.ACCEPTED).type(MediaType.APPLICATION_JSON_TYPE).build();
             }
-
     }
 
