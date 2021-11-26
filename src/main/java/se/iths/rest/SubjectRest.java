@@ -2,6 +2,7 @@ package se.iths.rest;
 
 import se.iths.entity.Subject;
 import se.iths.exception.BadRequestException;
+import se.iths.exception.BeenRemovedException;
 import se.iths.exception.NotFoundException;
 import se.iths.service.SubjectService;
 
@@ -86,11 +87,65 @@ public class SubjectRest {
         String errSubjectNotFound = "{\"Error\": \"No subject found with id " + id + "\"}";
 
         if (foundSubject == null) {
-            throw new NotFoundException(errSubjectNotFound);
+            throw new BeenRemovedException(errSubjectNotFound);
         }
         return Response.status(Response.Status.ACCEPTED).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
+    @Path("{subjectId}/addteacher/{teacherId}")
+    @POST
+    public Subject addTeacherToSubject(
+            @PathParam("subjectId") Long subjectId, @PathParam("teacherId") Long teacherId) {
+        Subject foundSubject = subjectService.findSubjectById(subjectId);
+        String errSubjectNotFound = "{\"Error\": \"No subject found with id " + subjectId + "\"}";
+
+        if (foundSubject == null) {
+            throw new NotFoundException(errSubjectNotFound);
+        }
+        return subjectService.addTeacherToSubject(subjectId, teacherId);
+    }
+
+    @Path("{subjectId}/deleteteacher/{teacherId}")
+    @POST
+    public Response deleteTeacherFromSubject(
+            @PathParam("subjectId") Long subjectId, @PathParam("teacherId") Long teacherId) {
+        Subject foundSubject = subjectService.findSubjectById(subjectId);
+        String errSubjectNotFound = "{\"Error\": \"No subject found with id " + subjectId + "\"}";
+
+        if (foundSubject == null) {
+            throw new NotFoundException(errSubjectNotFound);
+        }
+        Subject subjectToRemoveTecherFrom = subjectService.deleteTeacherFromSubject(subjectId, teacherId);
+        return Response.accepted(subjectToRemoveTecherFrom).build();
+    }
+
+
+    @Path("{subjectId}/addstudent/{studentId}")
+    @POST
+    public Subject addStudentToSubject(
+            @PathParam("subjectId") Long subjectId, @PathParam("studentId") Long studentId) {
+        Subject foundSubject = subjectService.findSubjectById(subjectId);
+        String errSubjectNotFound = "{\"Error\": \"No subject found with id " + subjectId + "\"}";
+
+        if (foundSubject == null) {
+            throw new NotFoundException(errSubjectNotFound);
+        }
+        return subjectService.addStudentToSubject(subjectId, studentId);
+    }
+
+    @Path("{subjectId}/deletestudent/{studentId}")
+    @POST
+    public Response deleteStudentFromSubject(
+            @PathParam("subjectId") Long subjectId, @PathParam("studentId") Long studentId) {
+        Subject foundSubject = subjectService.findSubjectById(subjectId);
+        String errSubjectNotFound = "{\"Error\": \"No subject found with id " + subjectId + "\"}";
+
+        if (foundSubject == null) {
+            throw new NotFoundException(errSubjectNotFound);
+        }
+        Subject subjectToRemoveStudentFrom = subjectService.deleteStudentFromSubject(subjectId, studentId);
+        return Response.accepted(subjectToRemoveStudentFrom).build();
+    }
 
 
 }
