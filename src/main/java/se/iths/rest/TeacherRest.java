@@ -43,13 +43,12 @@ public class TeacherRest {
     @Path("getAllByFirstName")
     @GET
     public Response getAllTeachersByFirstName(@QueryParam("firstName") String firstName) {
-        Teacher foundTeacher = (Teacher) teacherService.findAllTeachersByName(firstName);
         String errTeachersNotFound = "{\"Error\": \"No teacher found with name " + firstName + "\"}";
 
-        if (foundTeacher == null) {
+        if (firstName.isEmpty()) {
             throw new NotFoundException(errTeachersNotFound);
         }
-        return Response.ok(foundTeacher).build();
+        return Response.ok(teacherService.findAllTeachersByName(firstName)).build();
     }
 
     @GET
