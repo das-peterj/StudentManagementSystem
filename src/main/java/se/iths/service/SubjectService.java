@@ -93,4 +93,9 @@ public class SubjectService {
 
         return foundSubject;
     }
+
+    public List<Subject> findAllSubjectsByName(String subjectName) {
+        return entityManager.createQuery("SELECT s from Subject s WHERE s.subject like :name", Subject.class)
+                .setParameter("name", subjectName).getResultList();
+    }
 }
