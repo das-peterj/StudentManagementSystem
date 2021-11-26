@@ -31,8 +31,19 @@ public class Student {
 
     private String phoneNumber;
 
+    public Student(String firstName, String lastName, String email, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Student() {}
+
     @ManyToMany(mappedBy = "students", cascade = CascadeType.PERSIST)
     private Set<Subject> subjects = new HashSet<>();
+
+
 
     public void addSubject(Subject subject) {
         this.subjects.add(subject);
