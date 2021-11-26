@@ -1,11 +1,11 @@
 package se.iths.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Teacher {
@@ -28,8 +28,29 @@ public class Teacher {
 
     private String phoneNumber;
 
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.PERSIST)
+    private Set<Subject> subjects = new HashSet<>();
+
+    public void addSubject(Subject subject) {
+        this.subjects.add(subject);
+        subjects.add(subject);
+        subject.setTeacher(this);
+    }
+
+    public void deleteSubject(Subject subject) {
+        this.subjects.remove(subject);
+        subjects.remove(subject);
+        subject.setTeacher(this);
+    }
 
 
+    public Set<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Set<Subject> subjects) {
+        this.subjects = subjects;
+    }
 
 
     public Long getId() {

@@ -4,6 +4,8 @@ package se.iths.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NamedQuery(name="Student.findStudentByLastName",
@@ -27,6 +29,23 @@ public class Student {
     private String email;
 
     private String phoneNumber;
+
+    @ManyToMany(mappedBy = "students", cascade = CascadeType.PERSIST)
+    private Set<Subject> subjects = new HashSet<>();
+
+    public void addSubject(Subject subject) {
+        this.subjects.add(subject);
+        subject.getStudents().add(this);
+    }
+
+    public void setSubjects(Set<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public Set<Subject> getSubjects() {
+        return subjects;
+    }
+
 
     public Long getId() {
         return id;
