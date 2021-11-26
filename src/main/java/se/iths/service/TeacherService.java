@@ -1,10 +1,13 @@
 package se.iths.service;
 
+import se.iths.entity.Student;
+import se.iths.entity.Subject;
 import se.iths.entity.Teacher;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -37,6 +40,11 @@ public class TeacherService {
 
     public Teacher findTeacherById(Long id) {
         return entityManager.find(Teacher.class, id);
+    }
+
+    public List<Subject> findAllTeachersByName(String teacherFirstName) {
+        return entityManager.createQuery("SELECT t from Teacher t WHERE t.firstName like :name", Subject.class)
+                .setParameter("name", teacherFirstName).getResultList();
     }
 
     public List<Teacher> getAllTeachers() {

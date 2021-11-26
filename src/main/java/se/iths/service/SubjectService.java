@@ -69,7 +69,7 @@ public class SubjectService {
 
         foundSubject.setTeacher(null);
         foundTeacher.deleteSubject(foundSubject);
-        entityManager.persist(foundSubject);
+        entityManager.merge(foundSubject);
 
         return foundSubject;
     }
@@ -89,13 +89,13 @@ public class SubjectService {
         Student foundStudent = studentService.findStudentById(studentId);
 
         foundSubject.deleteStudent(foundStudent);
-        entityManager.persist(foundSubject);
+        entityManager.merge(foundSubject);
 
         return foundSubject;
     }
 
     public List<Subject> findAllSubjectsByName(String subjectName) {
-        return entityManager.createQuery("SELECT s from Subject s WHERE s.subject like :name", Subject.class)
-                .setParameter("name", subjectName).getResultList();
+        return entityManager.createQuery("SELECT s from Subject s WHERE s.subject like :subject", Subject.class)
+                .setParameter("subject", subjectName).getResultList();
     }
 }

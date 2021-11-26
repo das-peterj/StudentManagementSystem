@@ -1,6 +1,7 @@
 package se.iths.entity;
 
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -13,7 +14,7 @@ import java.util.Set;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotEmpty
@@ -42,6 +43,7 @@ public class Student {
         this.subjects = subjects;
     }
 
+    @JsonbTransient
     public Set<Subject> getSubjects() {
         return subjects;
     }

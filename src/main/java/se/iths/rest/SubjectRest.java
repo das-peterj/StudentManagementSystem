@@ -71,13 +71,12 @@ public class SubjectRest {
     @Path("getAllByName")
     @GET
     public Response getAllSubjectsByName(@QueryParam("subjectName") String subjectName) {
-        Subject foundSubject = (Subject) subjectService.findAllSubjectsByName(subjectName);
         String errSubjectsNotFound = "{\"Error\": \"No subject found with name " + subjectName + "\"}";
 
-        if(foundSubject == null) {
+        if (subjectName.isEmpty()) {
             throw new NotFoundException(errSubjectsNotFound);
         }
-        return Response.ok(foundSubject).build();
+        return Response.ok(subjectService.findAllSubjectsByName(subjectName)).build();
     }
 
     @Path("{id}")
@@ -89,6 +88,7 @@ public class SubjectRest {
         if (foundSubject == null) {
             throw new BeenRemovedException(errSubjectNotFound);
         }
+        subjectService.deleteSubject(id);
         return Response.status(Response.Status.ACCEPTED).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
@@ -109,14 +109,8 @@ public class SubjectRest {
     @POST
     public Response deleteTeacherFromSubject(
             @PathParam("subjectId") Long subjectId, @PathParam("teacherId") Long teacherId) {
-        Subject foundSubject = subjectService.findSubjectById(subjectId);
-        String errSubjectNotFound = "{\"Error\": \"No subject found with id " + subjectId + "\"}";
-
-        if (foundSubject == null) {
-            throw new NotFoundException(errSubjectNotFound);
-        }
         Subject subjectToRemoveTecherFrom = subjectService.deleteTeacherFromSubject(subjectId, teacherId);
-        return Response.accepted(subjectToRemoveTecherFrom).build();
+        return Response.ok(subjectToRemoveTecherFrom).build();
     }
 
 

@@ -11,7 +11,7 @@ import java.util.Set;
 public class Teacher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotEmpty
@@ -31,6 +31,15 @@ public class Teacher {
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.PERSIST)
     private Set<Subject> subjects = new HashSet<>();
 
+    public Teacher(String firstName, String lastName, String email, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Teacher() {}
+
     public void addSubject(Subject subject) {
         this.subjects.add(subject);
         subjects.add(subject);
@@ -40,10 +49,10 @@ public class Teacher {
     public void deleteSubject(Subject subject) {
         this.subjects.remove(subject);
         subjects.remove(subject);
-        subject.setTeacher(this);
+        subject.setTeacher(null);
     }
 
-
+    @JsonbTransient
     public Set<Subject> getSubjects() {
         return subjects;
     }
