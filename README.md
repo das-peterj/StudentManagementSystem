@@ -1,5 +1,5 @@
 # StudentManagementSystem
-Creating a student management system which allows you to create students and store them in a db thanks to JAX-RS.
+Creating a student management system which allows you to create a virtual school with teachers, subjects and students.
 
 
 **NEW: SampleData added for your convienience**
